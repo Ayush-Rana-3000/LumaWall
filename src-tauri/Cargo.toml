@@ -1,0 +1,51 @@
+[package]
+name = "lumawall"
+version = "0.1.0"
+description = "Advanced interactive live wallpaper platform for Windows"
+authors = ["LumaWall"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2.0", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "2.0", features = [] }
+tauri-plugin-updater = "2"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+windows = { version = "0.52", features = [
+  "Win32_Foundation",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_UI_HiDpi",
+  "Win32_System_Memory",
+  "Win32_Graphics_Gdi",
+  "Win32_System_Com",
+  "Win32_System_Performance",
+  "Win32_System_Diagnostics_ToolHelp",
+  "Win32_System_Threading",
+  "Win32_UI_Shell",
+  "Win32_UI_Controls",
+  "Win32_Graphics_Direct2D",
+  "Win32_Graphics_Dxgi",
+  "Win32_Graphics_Direct3D11",
+  "Win32_System_Ole",
+  "Win32_System_Com_StructuredStorage",
+  "Win32_System_LibraryLoader",
+  "Win32_System_SystemInformation",
+  "Win32_System_Power",
+] }
+webview2-com = "0.28"
+thiserror = "1.0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+strip = true
+
+[[bin]]
+name = "lumawall"
+path = "src/main.rs"

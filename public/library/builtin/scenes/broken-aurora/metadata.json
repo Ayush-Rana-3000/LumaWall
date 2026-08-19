@@ -1,0 +1,21 @@
+{
+  "id": "broken-aurora",
+  "title": "Aurora (broken demo)",
+  "description": "This scene intentionally references missing assets to exercise LumaWall's error handling — it should surface a clear error with Retry/Remove instead of crashing the app.",
+  "author": "QA Fixture",
+  "category": "Nature",
+  "tags": ["test", "broken", "qa"],
+  "type": "html",
+  "source": "builtin",
+  "files": {
+    "scene": "missing-scene.html",
+    "thumbnail": "missing-thumbnail.jpg"
+  },
+  "resolution": "1920x1080",
+  "aspectRatio": "16:9",
+  "interactive": false,
+  "audio": false,
+  "featured": false,
+  "version": "1.0.0",
+  "createdAt": "2026-08-18T00:00:00Z"
+}

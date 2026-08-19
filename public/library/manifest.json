@@ -1,0 +1,336 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-17T19:44:23.279Z",
+  "libraryRoot": "/library",
+  "scenes": [
+    {
+      "id": "broken-aurora",
+      "title": "Aurora (broken demo)",
+      "description": "This scene intentionally references missing assets to exercise LumaWall's error handling — it should surface a clear error with Retry/Remove instead of crashing the app.",
+      "author": "QA Fixture",
+      "category": "Nature",
+      "tags": [
+        "test",
+        "broken",
+        "qa"
+      ],
+      "type": "html",
+      "source": "builtin",
+      "files": {
+        "scene": null,
+        "thumbnail": null
+      },
+      "resolution": "1920x1080",
+      "aspectRatio": "16:9",
+      "interactive": false,
+      "audio": false,
+      "featured": false,
+      "version": "1.0.0",
+      "createdAt": "2026-08-18T00:00:00Z"
+    },
+    {
+      "id": "cosmic-particles",
+      "title": "Cosmic Particles",
+      "description": "A self-contained WebGL particle field. Ships its own renderer (index.html) and reads the LumaWall interaction bridge for mouse-parallax depth.",
+      "author": "Luma Studio",
+      "category": "Space",
+      "tags": [
+        "space",
+        "webgl",
+        "particles",
+        "interactive"
+      ],
+      "type": "webgl",
+      "source": "builtin",
+      "files": {
+        "scene": "/library/builtin/scenes/cosmic-particles/index.html",
+        "thumbnail": "/library/builtin/scenes/cosmic-particles/thumbnail.jpg"
+      },
+      "resolution": "1920x1080",
+      "aspectRatio": "16:9",
+      "fps": 60,
+      "interactive": true,
+      "audio": false,
+      "featured": false,
+      "recommended": true,
+      "version": "1.0.0",
+      "createdAt": "2026-08-18T00:00:00Z",
+      "interaction": {
+        "mouseParallax": true,
+        "mouseGlow": false,
+        "clickEffects": true,
+        "audioReactive": false
+      },
+      "perfEstimate": "medium",
+      "settings": [
+        {
+          "id": "density",
+          "type": "slider",
+          "label": "Density",
+          "min": 10,
+          "max": 200,
+          "step": 5,
+          "default": 80
+        },
+        {
+          "id": "speed",
+          "type": "slider",
+          "label": "Drift Speed",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 40
+        },
+        {
+          "id": "mouseGlow",
+          "type": "boolean",
+          "label": "Mouse Glow",
+          "default": true
+        },
+        {
+          "id": "clickBurst",
+          "type": "boolean",
+          "label": "Click Burst",
+          "default": true
+        }
+      ]
+    },
+    {
+      "id": "alpine-lake",
+      "title": "Alpine Reflection",
+      "description": "A cinematic alpine lake at dawn, framed by layered mountain ranges. Ships with a depth map for true 2.5D parallax — the shoreline stays close while the peaks drift gently with your cursor.",
+      "author": "Luma Studio",
+      "category": "Nature",
+      "tags": [
+        "mountains",
+        "lake",
+        "sunrise",
+        "cinematic",
+        "photography"
+      ],
+      "type": "photo",
+      "source": "builtin",
+      "files": {
+        "image": "/library/builtin/wallpapers/alpine-lake/image.png",
+        "depth": "/library/builtin/wallpapers/alpine-lake/depth.png",
+        "thumbnail": "/library/builtin/wallpapers/alpine-lake/thumbnail.jpg"
+      },
+      "resolution": "1600x900",
+      "aspectRatio": "16:9",
+      "fps": 60,
+      "interactive": true,
+      "audio": false,
+      "featured": true,
+      "recommended": true,
+      "version": "1.0.0",
+      "createdAt": "2026-08-18T00:00:00Z",
+      "interaction": {
+        "mouseParallax": true,
+        "mouseGlow": false,
+        "clickEffects": false,
+        "audioReactive": false
+      },
+      "perfEstimate": "medium",
+      "settings": [
+        {
+          "id": "motion",
+          "type": "slider",
+          "label": "Motion",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 35
+        },
+        {
+          "id": "parallax",
+          "type": "slider",
+          "label": "Depth Parallax",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 45
+        },
+        {
+          "id": "zoom",
+          "type": "slider",
+          "label": "Cinematic Zoom",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "default": 8
+        },
+        {
+          "id": "atmosphere",
+          "type": "slider",
+          "label": "Atmosphere",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 20
+        },
+        {
+          "id": "particles",
+          "type": "select",
+          "label": "Particles",
+          "default": "none",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "dust",
+              "label": "Floating Dust"
+            },
+            {
+              "value": "snow",
+              "label": "Snowfall"
+            }
+          ]
+        },
+        {
+          "id": "lightRays",
+          "type": "boolean",
+          "label": "Light Rays",
+          "default": false
+        },
+        {
+          "id": "vignette",
+          "type": "boolean",
+          "label": "Vignette",
+          "default": true
+        },
+        {
+          "id": "warmth",
+          "type": "slider",
+          "label": "Warmth",
+          "min": -30,
+          "max": 30,
+          "step": 1,
+          "default": 0
+        }
+      ]
+    },
+    {
+      "id": "rainy-tokyo-night",
+      "title": "Rainy Tokyo Night",
+      "description": "A neon-soaked Tokyo street after rain. The depth map separates the glowing skyline from the wet street, and falling rain streaks + moving neon reflections keep the scene alive.",
+      "author": "Luma Studio",
+      "category": "City",
+      "tags": [
+        "city",
+        "night",
+        "rain",
+        "neon",
+        "cinematic",
+        "photography"
+      ],
+      "type": "photo",
+      "source": "builtin",
+      "files": {
+        "image": "/library/builtin/wallpapers/rainy-tokyo-night/image.png",
+        "depth": "/library/builtin/wallpapers/rainy-tokyo-night/depth.png",
+        "thumbnail": "/library/builtin/wallpapers/rainy-tokyo-night/thumbnail.jpg"
+      },
+      "resolution": "1600x900",
+      "aspectRatio": "16:9",
+      "fps": 60,
+      "interactive": true,
+      "audio": false,
+      "featured": true,
+      "recommended": false,
+      "version": "1.0.0",
+      "createdAt": "2026-08-18T00:00:00Z",
+      "interaction": {
+        "mouseParallax": true,
+        "mouseGlow": true,
+        "clickEffects": false,
+        "audioReactive": false
+      },
+      "perfEstimate": "medium",
+      "settings": [
+        {
+          "id": "motion",
+          "type": "slider",
+          "label": "Motion",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 30
+        },
+        {
+          "id": "parallax",
+          "type": "slider",
+          "label": "Depth Parallax",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 55
+        },
+        {
+          "id": "zoom",
+          "type": "slider",
+          "label": "Cinematic Zoom",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "default": 6
+        },
+        {
+          "id": "atmosphere",
+          "type": "slider",
+          "label": "Atmosphere",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 30
+        },
+        {
+          "id": "particles",
+          "type": "select",
+          "label": "Particles",
+          "default": "rain",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "rain",
+              "label": "Rain"
+            },
+            {
+              "value": "snow",
+              "label": "Snowfall"
+            },
+            {
+              "value": "dust",
+              "label": "Floating Dust"
+            }
+          ]
+        },
+        {
+          "id": "lightRays",
+          "type": "boolean",
+          "label": "Light Rays",
+          "default": true
+        },
+        {
+          "id": "vignette",
+          "type": "boolean",
+          "label": "Vignette",
+          "default": true
+        },
+        {
+          "id": "warmth",
+          "type": "slider",
+          "label": "Warmth",
+          "min": -30,
+          "max": 30,
+          "step": 1,
+          "default": -8
+        }
+      ]
+    }
+  ]
+}

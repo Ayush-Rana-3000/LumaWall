@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cosmic Particles — LumaWall Scene</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #05070e; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<script>
+/* LumaWall scene: cosmic-particles.
+ *
+ * Reads the LumaWall interaction bridge:
+ *   - parent → iframe postMessage: { type: 'lw-init', settings, width, height }
+ *                                   { type: 'lw-state', mouseX, mouseY, time, perf }
+ *   - direct globals (set by the native host): window.__lw_mx, __lw_my
+ * Falls back to local mousemove/click when running standalone.
+ */
+(function () {
+  var canvas = document.getElementById('scene');
+  var settings = { density: 80, speed: 40, mouseGlow: true, clickBurst: true };
+  var W = 1920, H = 1080;
+  var mx = 0.5, my = 0.5, tm = 0, perf = 1;
+
+  function applySettings(s) {
+    if (!s) return;
+    for (var k in s) if (settings[k] !== undefined) settings[k] = s[k];
+    build();
+  }
+
+  /* ── WebGL renderer (point sprites, additive) ── */
+  var gl = null;
+  var program = null;
+  var buffer = null;
+  var particles = [];
+  var needsBuild = true;
+
+  try {
+    gl = canvas.getContext('webgl', { alpha: false, antialias: false, powerPreference: 'high-performance' })
+      || canvas.getContext('experimental-webgl');
+  } catch (e) { gl = null; }
+
+  var VS = 'attribute vec2 aPos; attribute float aSize; attribute vec3 aColor; varying vec3 vColor; void main(){ gl_Position = vec4(aPos, 0.0, 1.0); gl_PointSize = aSize; vColor = aColor; }';
+  var FS = 'precision mediump float; varying vec3 vColor; void main(){ vec2 c = gl_PointCoord - 0.5; float d = length(c); float a = smoothstep(0.5, 0.0, d); gl_FragColor = vec4(vColor, a); }';
+
+  function compile(type, src) {
+    var sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      console.warn('shader error', gl.getShaderInfoLog(sh));
+      return null;
+    }
+    return sh;
+  }
+
+  function initGL() {
+    program = gl.createProgram();
+    gl.attachShader(program, compile(gl.VERTEX_SHADER, VS));
+    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+    buffer = gl.createBuffer();
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+  }
+
+  function build() {
+    if (!gl) return;
+    needsBuild = true;
+  }
+
+  function makeParticles(count) {
+    var arr = [];
+    var palette = [
+      [0.75, 0.55, 1.0], [0.45, 0.72, 1.0], [1.0, 0.65, 0.85], [0.6, 1.0, 0.9]
+    ];
+    for (var i = 0; i < count; i++) {
+      var z = Math.random(); // depth 0..1
+      var c = palette[i % palette.length];
+      arr.push({
+        x: Math.random() * 2 - 1,
+        y: Math.random() * 2 - 1,
+        z: z,
+        size: 1.5 + z * 5,
+        speed: 0.002 + Math.random() * 0.008,
+        drift: Math.random() * Math.PI * 2,
+        color: c
+      });
+    }
+    return arr;
+  }
+
+  function renderGL(now) {
+    if (needsBuild) {
+      particles = makeParticles(Math.round(settings.density * 2.2));
+      needsBuild = false;
+      var data = new Float32Array(particles.length * 6);
+      for (var i = 0; i < particles.length; i++) {
+        data[i * 6] = particles[i].x;
+        data[i * 6 + 1] = particles[i].y;
+        data[i * 6 + 2] = particles[i].size;
+        data[i * 6 + 3] = particles[i].color[0];
+        data[i * 6 + 4] = particles[i].color[1];
+        data[i * 6 + 5] = particles[i].color[2];
+      }
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+    }
+
+    var pos = gl.getAttribLocation(program, 'aPos');
+    var sz = gl.getAttribLocation(program, 'aSize');
+    var col = gl.getAttribLocation(program, 'aColor');
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 24, 0);
+    gl.enableVertexAttribArray(sz);
+    gl.vertexAttribPointer(sz, 1, gl.FLOAT, false, 24, 8);
+    gl.enableVertexAttribArray(col);
+    gl.vertexAttribPointer(col, 3, gl.FLOAT, false, 24, 12);
+
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(0.02, 0.03, 0.055, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    var speed = (settings.speed / 100) * perf;
+    var px = (mx - 0.5) * 0.25 * perf;
+    var py = (my - 0.5) * 0.25 * perf;
+
+    // update positions
+    var data2 = new Float32Array(particles.length * 6);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.drift += 0.002 * speed;
+      p.x += Math.sin(p.drift) * 0.0006 * speed;
+      p.y -= p.speed * speed;
+      if (p.y < -1.15) { p.y = 1.15; p.x = Math.random() * 2 - 1; }
+      // parallax by depth
+      var ox = p.x + (p.z - 0.5) * px * 6;
+      var oy = p.y + (p.z - 0.5) * py * 6;
+      data2[i * 6] = ox;
+      data2[i * 6 + 1] = oy;
+      data2[i * 6 + 2] = p.size;
+      data2[i * 6 + 3] = p.color[0];
+      data2[i * 6 + 4] = p.color[1];
+      data2[i * 6 + 5] = p.color[2];
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data2, gl.DYNAMIC_DRAW);
+    gl.drawArrays(gl.POINTS, 0, particles.length);
+  }
+
+  /* ── 2D fallback renderer ── */
+  function render2D(now) {
+    var ctx2 = canvas.getContext('2d');
+    ctx2.fillStyle = '#05070e';
+    ctx2.fillRect(0, 0, W, H);
+    var speed = (settings.speed / 100) * perf;
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.y -= p.speed * speed * 0.6;
+      if (p.y < 0) { p.y = 1; p.x = Math.random(); }
+      var ox = (p.x + (p.z - 0.5) * (mx - 0.5) * 0.08) * W;
+      var oy = (p.y + (p.z - 0.5) * (my - 0.5) * 0.08) * H;
+      var r = p.size * 1.2;
+      var g = ctx2.createRadialGradient(ox, oy, 0, ox, oy, r * 3);
+      g.addColorStop(0, 'rgba(' + Math.round(p.color[0] * 255) + ',' + Math.round(p.color[1] * 255) + ',' + Math.round(p.color[2] * 255) + ',0.9)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx2.fillStyle = g;
+      ctx2.beginPath();
+      ctx2.arc(ox, oy, r * 3, 0, Math.PI * 2);
+      ctx2.fill();
+    }
+  }
+
+  var bursts = [];
+  function spawnBurst(cx, cy) {
+    for (var i = 0; i < 40; i++) {
+      bursts.push({
+        x: cx, y: cy,
+        vx: (Math.random() - 0.5) * 0.02,
+        vy: (Math.random() - 0.5) * 0.02,
+        life: 1, decay: 0.02 + Math.random() * 0.02,
+        c: Math.random() < 0.5 ? [1, 0.7, 0.9] : [0.6, 0.8, 1]
+      });
+    }
+  }
+  function renderBursts(ctx) {
+    for (var i = bursts.length - 1; i >= 0; i--) {
+      var b = bursts[i];
+      b.x += b.vx; b.y += b.vy; b.life -= b.decay;
+      if (b.life <= 0) { bursts.splice(i, 1); continue; }
+      ctx.beginPath();
+      ctx.arc(b.x * W, b.y * H, 2.2 * b.life + 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + Math.round(b.c[0] * 255) + ',' + Math.round(b.c[1] * 255) + ',' + Math.round(b.c[2] * 255) + ',' + (0.7 * b.life) + ')';
+      ctx.fill();
+    }
+  }
+
+  var last = performance.now();
+  function loop(now) {
+    requestAnimationFrame(loop);
+    if (now - last < 16) return; // ~60fps cap
+    last = now;
+    tm += 0.016;
+    if (gl) {
+      renderGL(now);
+    } else {
+      if (needsBuild) { particles = makeParticles(Math.round(settings.density)); needsBuild = false; }
+      var ctx = canvas.getContext('2d');
+      render2D(now);
+      renderBursts(ctx);
+    }
+    // mouse glow
+    if (settings.mouseGlow && gl) {
+      // a soft glow dot follows the cursor (additive)
+      var ctx2d = canvas.getContext('2d');
+      if (ctx2d) {
+        var g = ctx2d.createRadialGradient(mx * canvas.width, my * canvas.height, 0, mx * canvas.width, my * canvas.height, 90);
+        g.addColorStop(0, 'rgba(160,120,255,0.16)');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx2d.fillStyle = g;
+        ctx2d.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  }
+
+  function resize() {
+    var dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+
+  /* ── Interaction bridge ── */
+  window.addEventListener('mousemove', function (e) {
+    mx = e.clientX / window.innerWidth;
+    my = e.clientY / window.innerHeight;
+  });
+  window.addEventListener('click', function (e) {
+    if (settings.clickBurst) spawnBurst(e.clientX / window.innerWidth, e.clientY / window.innerHeight);
+  });
+  window.addEventListener('message', function (e) {
+    var d = e.data || {};
+    if (d.type === 'lw-init') {
+      if (d.width) { W = d.width; H = d.height; }
+      applySettings(d.settings);
+    } else if (d.type === 'lw-state') {
+      if (typeof d.mouseX === 'number') mx = d.mouseX;
+      if (typeof d.mouseY === 'number') my = d.mouseY;
+      if (typeof d.perf === 'number') perf = d.perf;
+    }
+  });
+  // Direct host injection (parent page globals)
+  setInterval(function () {
+    if (window.__lw_mx !== undefined) mx = window.__lw_mx;
+    if (window.__lw_my !== undefined) my = window.__lw_my;
+    if (window.__lw_perf !== undefined) perf = window.__lw_perf;
+  }, 100);
+
+  if (gl) initGL();
+  resize();
+  window.addEventListener('resize', resize);
+  applySettings(null);
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

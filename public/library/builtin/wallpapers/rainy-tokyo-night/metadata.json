@@ -1,0 +1,46 @@
+{
+  "id": "rainy-tokyo-night",
+  "title": "Rainy Tokyo Night",
+  "description": "A neon-soaked Tokyo street after rain. The depth map separates the glowing skyline from the wet street, and falling rain streaks + moving neon reflections keep the scene alive.",
+  "author": "Luma Studio",
+  "category": "City",
+  "tags": ["city", "night", "rain", "neon", "cinematic", "photography"],
+  "type": "photo",
+  "source": "builtin",
+  "files": {
+    "image": "image.png",
+    "depth": "depth.png",
+    "thumbnail": "thumbnail.jpg"
+  },
+  "resolution": "1600x900",
+  "aspectRatio": "16:9",
+  "fps": 60,
+  "interactive": true,
+  "audio": false,
+  "featured": true,
+  "recommended": false,
+  "version": "1.0.0",
+  "createdAt": "2026-08-18T00:00:00Z",
+  "interaction": {
+    "mouseParallax": true,
+    "mouseGlow": true,
+    "clickEffects": false,
+    "audioReactive": false
+  },
+  "perfEstimate": "medium",
+  "settings": [
+    { "id": "motion", "type": "slider", "label": "Motion", "min": 0, "max": 100, "step": 1, "default": 30 },
+    { "id": "parallax", "type": "slider", "label": "Depth Parallax", "min": 0, "max": 100, "step": 1, "default": 55 },
+    { "id": "zoom", "type": "slider", "label": "Cinematic Zoom", "min": 0, "max": 30, "step": 1, "default": 6 },
+    { "id": "atmosphere", "type": "slider", "label": "Atmosphere", "min": 0, "max": 100, "step": 1, "default": 30 },
+    { "id": "particles", "type": "select", "label": "Particles", "default": "rain", "options": [
+      { "value": "none", "label": "None" },
+      { "value": "rain", "label": "Rain" },
+      { "value": "snow", "label": "Snowfall" },
+      { "value": "dust", "label": "Floating Dust" }
+    ]},
+    { "id": "lightRays", "type": "boolean", "label": "Light Rays", "default": true },
+    { "id": "vignette", "type": "boolean", "label": "Vignette", "default": true },
+    { "id": "warmth", "type": "slider", "label": "Warmth", "min": -30, "max": 30, "step": 1, "default": -8 }
+  ]
+}

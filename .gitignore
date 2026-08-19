@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+src-tauri/target/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS files
+Desktop.ini
+ehthumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Tauri generated
+src-tauri/gen/
+
+# Freebuff
+.freebuff/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Coverage
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# Rust build artifacts
+*.pdb
+src-tauri/**/*.pdb
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini

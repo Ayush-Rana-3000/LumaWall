@@ -1,0 +1,36 @@
+{
+  "id": "cosmic-particles",
+  "title": "Cosmic Particles",
+  "description": "A self-contained WebGL particle field. Ships its own renderer (index.html) and reads the LumaWall interaction bridge for mouse-parallax depth.",
+  "author": "Luma Studio",
+  "category": "Space",
+  "tags": ["space", "webgl", "particles", "interactive"],
+  "type": "webgl",
+  "source": "builtin",
+  "files": {
+    "scene": "index.html",
+    "thumbnail": "thumbnail.jpg"
+  },
+  "resolution": "1920x1080",
+  "aspectRatio": "16:9",
+  "fps": 60,
+  "interactive": true,
+  "audio": false,
+  "featured": false,
+  "recommended": true,
+  "version": "1.0.0",
+  "createdAt": "2026-08-18T00:00:00Z",
+  "interaction": {
+    "mouseParallax": true,
+    "mouseGlow": false,
+    "clickEffects": true,
+    "audioReactive": false
+  },
+  "perfEstimate": "medium",
+  "settings": [
+    { "id": "density", "type": "slider", "label": "Density", "min": 10, "max": 200, "step": 5, "default": 80 },
+    { "id": "speed", "type": "slider", "label": "Drift Speed", "min": 0, "max": 100, "step": 1, "default": 40 },
+    { "id": "mouseGlow", "type": "boolean", "label": "Mouse Glow", "default": true },
+    { "id": "clickBurst", "type": "boolean", "label": "Click Burst", "default": true }
+  ]
+}
