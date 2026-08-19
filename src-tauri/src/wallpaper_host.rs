@@ -634,8 +634,8 @@ mod tests {
   fn test_file_url_from_path() {
     // Spaces, unicode, and URL-breaking characters must be percent-encoded.
     assert_eq!(
-      file_url_from_path("C:/Users/MR. Ayush/AppData/Local/Temp/lumawall_live_video.html"),
-      "file:///C:/Users/MR.%20Ayush/AppData/Local/Temp/lumawall_live_video.html"
+      file_url_from_path("C:/Users/TestUser/AppData/Local/Temp/lumawall_live_video.html"),
+      "file:///C:/Users/TestUser/AppData/Local/Temp/lumawall_live_video.html"
     );
     assert_eq!(file_url_from_path("C:/videos/#1 - 100% final.mp4"), "file:///C:/videos/%231%20-%20100%25%20final.mp4");
     // Structural characters survive.
