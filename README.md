@@ -13,6 +13,34 @@ A premium Windows live-wallpaper platform with procedural engines, photo paralla
 
 ---
 
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" alt="LumaWall Dashboard" width="800" />
+  <br/>
+  <em>Dashboard — immersive hero with featured live wallpapers</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/library.png" alt="LumaWall Library" width="800" />
+  <br/>
+  <em>Library — browse, search, and import wallpapers</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/displays.png" alt="LumaWall Displays" width="800" />
+  <br/>
+  <em>Displays — multi-monitor management</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/settings.png" alt="LumaWall Settings" width="800" />
+  <br/>
+  <em>Settings — performance modes, preferences, and about</em>
+</p>
+
+---
+
 ## Features
 
 - **17 procedural wallpaper engines** — Matrix, Nebula, Particles, Waves, Rain, and more
